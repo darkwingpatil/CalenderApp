@@ -6,8 +6,8 @@
 
   color-scheme: light dark;
   color: #242424;
-  background-color: rgb(211, 204, 204);
-
+  /* background-color: rgb(211, 204, 204); */
+  background-color: #E7E8E8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

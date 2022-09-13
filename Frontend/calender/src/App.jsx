@@ -129,9 +129,9 @@ function App() {
   }
   return (
     <>
-    <div className='Top'>
+    <div className='Top1'>
       <div><h1>{modfi},{today} {months111[new Date().getMonth()]}</h1></div>
-      <div className='Top-buttons'>
+      <div className='Top-buttons1'>
       <select onChange={(e)=>{
       console.log(e.target.value)
       let obj1={val:e.target.value}
@@ -203,7 +203,7 @@ function App() {
     {
           extra.map((el)=>{
             return(
-              <div>{el}
+              <div className='Extra-one'>{el}
               <p>{mymonths[1]}</p>
               </div>
             )
@@ -234,7 +234,7 @@ function App() {
     {
       extraN.map((el)=>{
         return(
-          <div>{el}
+          <div className='Extra-one'>{el}
           <p>{mymonths[2]}</p>
           </div>
         )

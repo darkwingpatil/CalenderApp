@@ -7,18 +7,21 @@
 .Main-head{
   display: flex;
 }
-.Top{
+.Top,.Top1{
   display: flex;
   width:100%;
-  border: 1px solid red;
   justify-content: space-between;
 }
-.Top>div{
-  border: 1px solid black;
+
+.Top1{
+  border: 1px solid rgb(144, 144, 144);
+  border-radius: 20px;
+  background-color: rgb(144, 144, 144);
+
 }
-.Top-buttons{
+
+.Top-buttons,.Top-buttons1{
   display: flex;
-  border: 1px solid black;
   align-items: center;
   width:20%;
   justify-content: space-between;
@@ -33,8 +36,8 @@ select{
   grid-template-columns: repeat(7,1fr);
 }
 .today{
-  background-color: white;
-  color: #000;
+  background-color: #1400ec;
+  color: white;
 }
 .logo {
   height: 6em;
@@ -50,12 +53,20 @@ select{
 .App{
   display: grid;
   grid-template-columns: repeat(7,1fr);
+  gap:10px;
+}
+.Extra-one{
+  background-color: rgb(71, 71, 71);
 }
 .App>div{
-  border: 1px solid red;
+  border: 1px solid grey;
+  border-radius: 20px;
   height:100px;
   width:150px;
-
+  cursor: pointer;
+}
+.App>div:hover{
+  background-color: powderblue;
 }
 
 @keyframes logo-spin {
