@@ -58,6 +58,16 @@ select{
 .Extra-one{
   background-color: rgb(71, 71, 71);
 }
+
+.wrap-it{
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+::-webkit-scrollbar{
+  display: none;
+}
 .App>div{
   border: 1px solid grey;
   border-radius: 20px;

@@ -1,6 +1,20 @@
 import React, { useState } from 'react'
 import reactLogo from './assets/react.svg'
+import { Spinner } from '@chakra-ui/react'
 import './App.css'
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+  Portal,
+  Box
+} from '@chakra-ui/react'
 
 function App() {
 
@@ -8,13 +22,19 @@ function App() {
   let day=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
   var months111 = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const[mymonths,setMymonths]=React.useState([])
-
+  const initRef = React.useRef()
   const[today,setToday]=React.useState(0)
   const[extra,setExtra]=React.useState([])
   const[extraN,setExtraN]=React.useState([])
   const[navi,setNavi]=React.useState(0)
   const[year,setYear]=React.useState(0)
   const[modfi,setmodfi]=React.useState("")
+  const[eventDeatils,seteventDeatils]=React.useState({})
+  const[Loading,setloading]=React.useState(false)
+
+  const[loadEvents,setLoadEvents]=React.useState([])
+
+  const[hideModel,setHidemodel]=React.useState(false)
   
   React.useEffect(()=>{
 
@@ -32,7 +52,7 @@ function App() {
     {
        sendbody={count:count}
     }
-    
+    setloading(true)
     fetch("http://localhost:8080/today",{
       method:"POST",
       headers:{
@@ -124,8 +144,31 @@ function App() {
      }
     //  console.log(prevArray,"hh")
      setExtra(prevArray)
+
+     fetch("http://localhost:8080/message",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(eventDeatils)
+    })
+    .then((res)=>res.json())
+    .then((data)=>{console.log(data.events)
+      setloading(false)
+     setLoadEvents(data.events)
+   })
     })
     .catch((e)=>console.log(e))
+  }
+  if(Loading)
+  {
+    return <Spinner
+    thickness='4px'
+    speed='0.65s'
+    emptyColor='gray.200'
+    color='blue.500'
+    size='xl'
+  />
   }
   return (
     <>
@@ -224,9 +267,96 @@ function App() {
       }
       if(ele.date)
       return(
-        <div key={ind}>{ele.date}
-        <p>{mymonths[0][0]}</p>
+<Popover>
+  <PopoverTrigger >
+  <div className='wrap-it' key={ind}>{ele.date}
+        <p onClick={()=>setHidemodel(true)}>{mymonths[0][0]}</p>
+        {
+          (loadEvents.length>0)?
+          loadEvents.map((el)=>{
+            if(ele.date==el.date && mymonths[0][0]==el.mymonths && el.year==year)
+            return(
+              // <>
+              //  <p>*exist</p>
+              // </>
+              <Popover closeOnBlur={false} placement='left' initialFocusRef={initRef}>
+              {({ isOpen, onClose }) => (
+                <>
+                  <PopoverTrigger>
+                    <button onClick={()=>setHidemodel(false)}>*Task {isOpen ? 'close' : 'open'}</button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent>
+                      <PopoverHeader>Your Task!</PopoverHeader>
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        <Box>
+                          <p>{el.message}</p>
+                          <p>event date: {el.time}</p>
+                        </Box>
+                        <button
+                          mt={4}
+                          colorScheme='blue'
+                          onClick={onClose}
+                          ref={initRef}
+                        >
+                          Close
+                        </button>
+                      </PopoverBody>
+                      <PopoverFooter>added event to: {el.email}</PopoverFooter>
+                    </PopoverContent>
+                  </Portal>
+                </>
+              )}
+            </Popover>
+            )
+          }):<></>
+        }
         </div>
+  </PopoverTrigger>
+  {
+    (hideModel)?
+     <Portal>
+     <PopoverContent>
+       <PopoverArrow />
+       <PopoverHeader>Event</PopoverHeader>
+       <PopoverCloseButton />
+       <PopoverBody>
+         <input placeholder='enter your mail' name="email" onChange={(e)=>seteventDeatils({...eventDeatils,[e.target.name]:e.target.value})}/>
+         <textarea placeholder='enter details' name="message" rows="4" cols="35" onChange={(e)=>seteventDeatils({...eventDeatils,[e.target.name]:e.target.value})}/>
+       </PopoverBody>
+       <PopoverFooter>
+         <button onClick={()=>{
+           console.log(eventDeatils)
+           ///{ele.date}{mymonths[0][0]}{year}
+           eventDeatils.date=ele.date
+           eventDeatils.mymonths=mymonths[0][0]
+           eventDeatils.year=year
+           console.log(eventDeatils)
+           setHidemodel(false)
+           alert("event added successfully!")
+
+           setloading(true)
+           fetch("http://localhost:8080/message",{
+             method:"POST",
+             headers:{
+               "Content-Type":"application/json"
+             },
+             body:JSON.stringify(eventDeatils)
+           })
+           .then((res)=>res.json())
+           .then((data)=>{console.log(data.events)
+            setLoadEvents(data.events)
+            setloading(false)
+          })
+           .catch((e)=>console.log(e))
+         }}>Add</button>
+       </PopoverFooter>
+     </PopoverContent>
+   </Portal>:<></>
+  }
+ 
+</Popover>
       )
      })
     }
